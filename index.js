@@ -1,10 +1,6 @@
-var express = require('express');
-var app = express();
+import { createStore } from 'redux'
 
-app.get('/', function(req, res) {
-    res.send('Hello, World');
-});
+let store = createStore(function () { return 'Hello, Redux!' })
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
+var contents = document.getElementById('contents')
+contents.innerHTML = store.getState().toString()
