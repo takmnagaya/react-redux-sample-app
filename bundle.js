@@ -1,16 +1,80 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var nextTodoId = 0;
+
+// TODOを追加する
+var addTodo = exports.addTodo = function addTodo(text) {
+    return {
+        type: 'ADD_TODO',
+        id: nextTodoId++,
+        text: text
+    };
+};
+// TODOを完了する
+var toggleTodo = exports.toggleTodo = function toggleTodo(id) {
+    return {
+        type: 'TOGGLE_TODO',
+        id: id
+    };
+};
+
+// TODOをフィルタリングする
+var setVisibilityFilter = exports.setVisibilityFilter = function setVisibilityFilter(filter) {
+    return {
+        type: 'SET_VISIBILITY_FILTER',
+        filter: filter
+    };
+};
+
+},{}],2:[function(require,module,exports){
+'use strict';
+
 var _redux = require('redux');
 
-var store = (0, _redux.createStore)(function () {
-  return 'Hello, Redux!';
+var _index = require('./actions/index.js');
+
+var _index2 = require('./reducers/index.js');
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var store = (0, _redux.createStore)(_index2.todoApp);
+
+var addTodoElem = document.getElementById('addTodo');
+var input = addTodoElem.getElementsByTagName('input')[0];
+var button = addTodoElem.getElementsByTagName('button')[0];
+button.addEventListener('click', function () {
+    // ボタンをクリックしたら「TODOを追加する」というアクションをStoreに渡す
+    var todoText = input.value;
+    store.dispatch((0, _index.addTodo)(todoText));
 });
 
-var contents = document.getElementById('contents');
-contents.innerHTML = store.getState().toString();
+// TODOの完了
+var todoList = document.getElementById('todoList');
+var elements = todoList.getElementsByTagName('li');
+var listArray = [].concat(_toConsumableArray(elements));
+listArray.forEach(function (v, index) {
+    v.addEventListener('click', function (e) {
+        store.dispatch((0, _index.toggleTodo)(index));
+    });
+});
 
-},{"redux":18}],2:[function(require,module,exports){
+var links = document.getElementById('links');
+var childs = links.childNodes;
+var childList = [].concat(_toConsumableArray(childs));
+childList.filter(function (v) {
+    return v.nodeName != '#text';
+}).forEach(function (v) {
+    v.addEventListener('click', function (e) {
+        var filterText = v.innerHTML;
+        store.dispatch((0, _index.setVisibilityFilter)(filterText));
+    });
+});
+
+},{"./actions/index.js":1,"./reducers/index.js":24,"redux":19}],3:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -18,7 +82,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":9}],3:[function(require,module,exports){
+},{"./_root":10}],4:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -48,7 +112,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":2,"./_getRawTag":6,"./_objectToString":7}],4:[function(require,module,exports){
+},{"./_Symbol":3,"./_getRawTag":7,"./_objectToString":8}],5:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -56,7 +120,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -64,7 +128,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":8}],6:[function(require,module,exports){
+},{"./_overArg":9}],7:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -112,7 +176,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":2}],7:[function(require,module,exports){
+},{"./_Symbol":3}],8:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -136,7 +200,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -153,7 +217,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -164,7 +228,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":4}],10:[function(require,module,exports){
+},{"./_freeGlobal":5}],11:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -195,7 +259,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     getPrototype = require('./_getPrototype'),
     isObjectLike = require('./isObjectLike');
@@ -259,7 +323,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_baseGetTag":3,"./_getPrototype":5,"./isObjectLike":10}],12:[function(require,module,exports){
+},{"./_baseGetTag":4,"./_getPrototype":6,"./isObjectLike":11}],13:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -445,7 +509,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -504,7 +568,7 @@ function applyMiddleware() {
     };
   };
 }
-},{"./compose":16}],14:[function(require,module,exports){
+},{"./compose":17}],15:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -556,7 +620,7 @@ function bindActionCreators(actionCreators, dispatch) {
   }
   return boundActionCreators;
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -702,7 +766,7 @@ function combineReducers(reducers) {
   };
 }
 }).call(this,require('_process'))
-},{"./createStore":17,"./utils/warning":19,"_process":12,"lodash/isPlainObject":11}],16:[function(require,module,exports){
+},{"./createStore":18,"./utils/warning":20,"_process":13,"lodash/isPlainObject":12}],17:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -739,7 +803,7 @@ function compose() {
     };
   });
 }
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1001,7 +1065,7 @@ var ActionTypes = exports.ActionTypes = {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":11,"symbol-observable":20}],18:[function(require,module,exports){
+},{"lodash/isPlainObject":12,"symbol-observable":21}],19:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -1050,7 +1114,7 @@ exports.bindActionCreators = _bindActionCreators2['default'];
 exports.applyMiddleware = _applyMiddleware2['default'];
 exports.compose = _compose2['default'];
 }).call(this,require('_process'))
-},{"./applyMiddleware":13,"./bindActionCreators":14,"./combineReducers":15,"./compose":16,"./createStore":17,"./utils/warning":19,"_process":12}],19:[function(require,module,exports){
+},{"./applyMiddleware":14,"./bindActionCreators":15,"./combineReducers":16,"./compose":17,"./createStore":18,"./utils/warning":20,"_process":13}],20:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -1076,10 +1140,10 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = require('./lib/index');
 
-},{"./lib/index":21}],21:[function(require,module,exports){
+},{"./lib/index":22}],22:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -1111,7 +1175,7 @@ if (typeof self !== 'undefined') {
 var result = (0, _ponyfill2['default'])(root);
 exports['default'] = result;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./ponyfill":22}],22:[function(require,module,exports){
+},{"./ponyfill":23}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1135,4 +1199,70 @@ function symbolObservablePonyfill(root) {
 
 	return result;
 };
-},{}]},{},[1]);
+},{}],24:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _redux = require('redux');
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var todo = function todo(state, action) {
+    switch (action.type) {
+        case 'ADD_TODO':
+            return {
+                id: action.id,
+                text: action.text,
+                completed: false
+            };
+        case 'TOGGLE_TODO':
+            if (state.id !== action.id) {
+                return state;
+            }
+            return Object.assign({}, state, {
+                completed: !state.completed
+            });
+        default:
+            return state;
+    }
+};
+
+var todos = function todos() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+    var action = arguments[1];
+
+    switch (action.type) {
+        case 'ADD_TODO':
+            return [].concat(_toConsumableArray(state), [todo(undefined, action)]);
+        case 'TOGGLE_TODO':
+            return state.map(function (t) {
+                return todo(t, action);
+            });
+        default:
+            return state;
+    }
+};
+
+var visibilityFilter = function visibilityFilter() {
+    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'SHOW_ALL';
+    var action = arguments[1];
+
+    switch (action.type) {
+        case 'SET_VISIBILITY_FILTER':
+            return action.filter;
+        default:
+            return state;
+    }
+};
+
+var todoApp = (0, _redux.combineReducers)({
+    todos: todos,
+    visibilityFilter: visibilityFilter
+});
+
+exports.default = todoApp;
+
+},{"redux":19}]},{},[2]);
