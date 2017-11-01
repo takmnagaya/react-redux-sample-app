@@ -1,7 +1,8 @@
-import { createStore } from 'redux';
-import { addTodo, toggleTodo, setVIsibilityFilter } from './actions/index.js';
+import {createStore} from 'redux';
+import {addTodo, toggleTodo, setVisibilityFilter} from './actions/index.js';
+import {todoApp} from './reducers/index.js';
 
-let store = createStore(() => { return 'Hello' });
+let store = createStore(todoApp);
 
 var addTodoElem = document.getElementById('addTodo');
 var input = addTodoElem.getElementsByTagName('input')[0];
@@ -19,15 +20,15 @@ var listArray = [...elements];
 listArray.forEach((v, index) => {
     v.addEventListener('click', e => {
         store.dispatch(toggleTodo(index));
-});
+    });
 });
 
 var links = document.getElementById('links');
 var childs = links.childNodes;
 var childList = [...childs];
 childList.filter(v => v.nodeName != '#text').forEach(v => {
-   v.addEventListener('click', e => {
-       var filterText = v.innerHTML;
-       store.dispatch(setVIsibilityFilter(filterText));
-});
+    v.addEventListener('click', e => {
+        var filterText = v.innerHTML;
+        store.dispatch(setVisibilityFilter(filterText));
+    });
 });
